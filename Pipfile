@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 slack-bolt = "*"
 python-dotenv = "*"
+google-genai = "*"
+requests = "*"
 
 [dev-packages]
 
