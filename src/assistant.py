@@ -74,7 +74,7 @@ def respond_in_assistant_thread(
                 role = "user"
             else:
                 role = "model"
-            messages_in_thread.append({"role": role, "content": message["text"]})
+            messages_in_thread.append({"role": role, "parts": message["text"]})
         returned_message = call_llm(messages_in_thread)
         say(returned_message)
 

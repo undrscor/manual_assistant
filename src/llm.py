@@ -27,10 +27,11 @@ def call_llm(
         messages = []
         for message in messages_in_thread:
             role = message["role"]
-            text = message["content"]
+            parts = [Part(text=message["parts"])]
+            #parts = message["parts"]
 
             # Create a content object
-            messages.append(Content(role=role, parts=[Part.from_text(text)]))
+            messages.append(Content(role=role, parts=parts))
 
         response = client.models.generate_content(
             model="gemini-2.0-flash",
@@ -40,7 +41,7 @@ def call_llm(
                 max_output_tokens=200,
             ),
         )
-        bot_response = response.choices[0].message.content
+        bot_response = response.text
         print(bot_response)
         return bot_response
         # return markdown_to_slack(response.choices[0].message.content)
