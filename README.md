@@ -1,6 +1,6 @@
 # Slack PDF Assistant Bot
 
-A Slack bot that answers questions about a PDF document using Google's Gemini AI model. The bot utilizes caching to improve performance and reduce API usage.
+A Slack bot that answers questions about a user manual PDF document using Google's Gemini AI model.
 
 ## Overview
 
@@ -77,6 +77,3 @@ python main.py
 - Check for error messages in the console
 - Make sure your Gemini API key has sufficient quota
 
-## License
-
-[Add your license information here]
