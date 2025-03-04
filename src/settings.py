@@ -1,9 +1,8 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file="../.env")
+    model_config = SettingsConfigDict(env_file=".env")
     # slack
     SLACK_BOT_TOKEN: str
     SLACK_APP_TOKEN: str
@@ -24,6 +23,3 @@ class Settings(BaseSettings):
     """
 
 
-@lru_cache
-def get_settings() -> Settings:
-    return Settings()

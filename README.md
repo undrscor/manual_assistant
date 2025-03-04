@@ -13,6 +13,7 @@ This Slack bot:
 ## Prerequisites
 
 - Python 3.8+
+- Pipenv
 - A Slack workspace where you can create bots
 - Google Gemini API access
 
@@ -26,9 +27,7 @@ cd slack-pdf-assistant
 
 2. Create a virtual environment and install dependencies:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+pipenv install
 ```
 
 3. Create a `.env` file in the project root with your credentials:
