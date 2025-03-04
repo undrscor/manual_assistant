@@ -5,30 +5,27 @@ from typing import List, Dict
 
 from google import genai
 from google.genai import types
-from google.genai.types import Content, Part, FileData, FileDataDict
+from google.genai.types import Content, Part, FileDataDict
 
-from settings import Settings
+from settings import settings
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
 
 @cache
-def initialize_client(
-    settings: Settings = Settings(),
-) -> genai.Client:
+def get_client():
     gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
     return gemini_client
 
 
 @cache
-def cache_llm(settings: Settings = Settings()):
-    client = initialize_client()
+def cache_llm() -> types.CachedContent:
+    client = get_client()
 
     pdf_path = pathlib.Path("user_manual.pdf")
     if not pdf_path.exists():
-        logger.error(f"PDF file not found at {pdf_path}")
-        return
+        raise FileNotFoundError(f"PDF file not found at {pdf_path}")
 
     user_manual_file = client.files.upload(file=pdf_path)
 
@@ -48,10 +45,9 @@ def cache_llm(settings: Settings = Settings()):
 def call_llm(
     messages_in_thread: List[Dict[str, str]],
 ) -> str:
-    settings = Settings()
     pdf_cache = cache_llm()
 
-    client = initialize_client()
+    client = get_client()
 
     messages = []
     for message in messages_in_thread:
@@ -63,7 +59,7 @@ def call_llm(
         model=settings.LLM_MODEL,
         contents=messages,
         config=types.GenerateContentConfig(
-            cached_content=pdf_cache.name if pdf_cache else None,
+            cached_content=pdf_cache.name,
             max_output_tokens=200,
         ),
     )
@@ -74,8 +70,7 @@ def call_llm(
 def call_llm_no_cache(
     messages_in_thread: List[Dict[str, str]],
 ) -> str:
-    settings = Settings()
-    client = initialize_client()
+    client = get_client()
     pdf_path = pathlib.Path("user_manual.pdf")
 
     if not pdf_path.exists():

@@ -26,7 +26,6 @@ def respond_in_assistant_thread(
     client: WebClient,
     say: Say,
 ):
-
     set_status("is typing...")
 
     # saves replies
@@ -37,6 +36,7 @@ def respond_in_assistant_thread(
         limit=10,
     )
 
+    # format replies for llm chat reading
     messages_in_thread: List[Dict[str, str]] = []
     for message in replies["messages"]:
         if message.get("bot_id") is None:
@@ -47,10 +47,9 @@ def respond_in_assistant_thread(
 
     # ask llm, optionally can use no caching method
     try:
-        returned_message = call_llm(messages_in_thread)
-        #returned_message_no_cache = call_llm_no_cache(messages_in_thread)
+        returned_message = call_llm(messages_in_thread[-10:])
+        # returned_message = call_llm_no_cache(messages_in_thread)       #no cache method
     except Exception as e:
         say("Something went wrong")
         return
     say(returned_message)
-    #say(returned_message_no_cache)
