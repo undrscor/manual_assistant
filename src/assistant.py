@@ -1,16 +1,16 @@
 import logging
 from typing import List, Dict
+
 from slack_bolt import Assistant, BoltContext, Say, SetStatus
 from slack_sdk import WebClient
 
-from llm import call_llm, cache_llm
-from src.llm import call_llm_no_cache
+from src.llm import call_llm_no_cache, call_llm
 
 # Refer to https://tools.slack.dev/bolt-python/concepts/assistant/ for more details
 assistant = Assistant()
 
 
-# This listener is invoked when a human user opened an assistant thread
+# new assistant thread handler
 @assistant.thread_started
 def start_assistant_thread(
     say: Say,
@@ -25,7 +25,7 @@ def start_assistant_thread(
         say(f":warning: Something went wrong! ({e})")
 
 
-# This listener is invoked when the human user sends a reply in the assistant thread
+# assistant message handler
 @assistant.user_message
 def respond_in_assistant_thread(
     logger: logging.Logger,
@@ -37,6 +37,7 @@ def respond_in_assistant_thread(
     try:
         set_status("is typing...")
 
+        # saves replies
         replies = client.conversations_replies(
             channel=context.channel_id,
             ts=context.thread_ts,
@@ -51,11 +52,12 @@ def respond_in_assistant_thread(
             else:
                 role = "model"
             messages_in_thread.append({"role": role, "parts": message["text"]})
-        returned_message_no_cache = call_llm_no_cache(messages_in_thread)
-        say(returned_message_no_cache)
-        #returned_message = call_llm(messages_in_thread)
-        #say(returned_message)
 
+        # ask llm, optionally can use caching for pdf and starting prompt
+        # returned_message_no_cache = call_llm_no_cache(messages_in_thread)
+        # say(returned_message_no_cache)
+        returned_message = call_llm(messages_in_thread)
+        say(returned_message)
 
     except Exception as e:
         logger.exception(f"Failed to handle a user message event: {e}")
