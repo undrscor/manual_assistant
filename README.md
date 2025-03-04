@@ -37,7 +37,7 @@ SLACK_APP_TOKEN=xapp-your-app-token
 GEMINI_API_KEY=your-gemini-api-key
 ```
 
-4. Place your PDF document in the project root and name it `user_manual.pdf`
+4. Optional: Replace the user manual pdf
 
 ## Slack App Configuration
 
@@ -65,14 +65,14 @@ python main.py
 
 ## Usage
 
-1. Open a direct message with the bot or mention the bot in a channel where it's been added
+1. Open an assistant thread to chat with the bot
 2. Ask questions about the content in your PDF document
-3. The bot will respond with information extracted from the PDF
+3. The bot will respond with information about the user manual
 
 ## Troubleshooting
 
 - Ensure all tokens in the `.env` file are correct
-- Verify the PDF file exists at the project root and is named `user_manual.pdf`
+- Verify the PDF file
 - Check for error messages in the console
 - Make sure your Gemini API key has sufficient quota
 
