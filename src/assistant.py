@@ -1,10 +1,9 @@
-import logging
 from typing import List, Dict
 
 from slack_bolt import Assistant, BoltContext, Say, SetStatus
 from slack_sdk import WebClient
 
-from src.llm import call_llm_no_cache, call_llm
+from llm import cache_llm, call_llm
 
 # Refer to https://tools.slack.dev/bolt-python/concepts/assistant/ for more details
 assistant = Assistant()
@@ -14,16 +13,14 @@ assistant = Assistant()
 @assistant.thread_started
 def start_assistant_thread(
     say: Say,
-    logger: logging.Logger,
 ):
     say("How can I help you?")
-    # cache_llm()
+    cache_llm()
 
 
 # assistant message handler
 @assistant.user_message
 def respond_in_assistant_thread(
-    logger: logging.Logger,
     context: BoltContext,
     set_status: SetStatus,
     client: WebClient,
@@ -48,13 +45,12 @@ def respond_in_assistant_thread(
             role = "model"
         messages_in_thread.append({"role": role, "parts": message["text"]})
 
-    # ask llm, optionally can use caching for pdf and starting prompt
-    # returned_message_no_cache = call_llm_no_cache(messages_in_thread)
+    # ask llm, optionally can use no caching method
     try:
         returned_message = call_llm(messages_in_thread)
+        #returned_message_no_cache = call_llm_no_cache(messages_in_thread)
     except Exception as e:
-        say("Something went wrongOhNo")
+        say("Something went wrong")
         return
     say(returned_message)
-
-
+    #say(returned_message_no_cache)

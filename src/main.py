@@ -1,10 +1,10 @@
 import logging
+
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 from assistant import assistant
 from settings import Settings
-from src.llm import cache_llm
 
 # logging
 logging.basicConfig(
@@ -22,8 +22,6 @@ def main():
         slackapp = App(token=settings.SLACK_BOT_TOKEN)
         # add assistant functionality
         slackapp.assistant(assistant)
-
-        cache_llm()
 
         handler = SocketModeHandler(slackapp, settings.SLACK_APP_TOKEN)
         handler.start()
